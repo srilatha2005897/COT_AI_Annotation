@@ -1,0 +1,24 @@
+# AI Annotation Platform
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.db
+uploads/
+annotated/
+# ignore model weights in general, but keep the small default one so a fresh
+# clone works offline
+*.pt
+!backend/yolov8n.pt
+.DS_Store
+node_modules/
+frontend/dist/
+.idea/
+.vscode/
+
+# Tests / tooling
+.pytest_cache/
+.coverage
+htmlcov/
+*.log

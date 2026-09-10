@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: annotate
+      POSTGRES_PASSWORD: annotate
+      POSTGRES_DB: annotate
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U annotate -d annotate"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+psycopg2://annotate:annotate@db:5432/annotate
+      YOLO_MODEL: yolov8n.pt
+      CONFIDENCE_THRESHOLD: "0.25"
+      WEB_CONCURRENCY: "2"
+      AUTH_COOKIE_SECURE: "false"  # set true behind HTTPS
+      # Required. Put real values in a .env file next to this compose file.
+      TOKEN_SECRET: ${TOKEN_SECRET:?set TOKEN_SECRET in .env}
+      ADMIN_SETUP_KEY: ${ADMIN_SETUP_KEY:?set ADMIN_SETUP_KEY in .env}
+    volumes:
+      - uploads:/app/uploads
+      - annotated:/app/annotated
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  uploads:
+  annotated:

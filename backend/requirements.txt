@@ -1,0 +1,16 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+gunicorn==23.0.0
+python-multipart==0.0.20
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+alembic==1.14.0
+ultralytics==8.3.57
+opencv-python-headless==4.10.0.84
+Pillow==11.0.0
+pydantic==2.10.3
+pydantic-settings==2.6.1
+aiofiles==24.1.0
+# ultralytics 8.3.x requires numpy<2 on macOS
+numpy>=1.26.4,<2.0.0
+python-dotenv==1.0.1
