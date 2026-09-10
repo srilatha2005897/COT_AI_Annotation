@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, register } from "../api";
+import { login, register, resetPassword } from "../api";
 import "./Auth.css";
 
 function AuthShell({
@@ -454,6 +454,193 @@ export function RegisterPage({ onSuccess }) {
         <div className="secure-note">
           <span>🔒</span>
           Your information is securely protected
+        </div>
+      </form>
+    </AuthShell>
+  );
+}
+
+
+export function ResetPasswordPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!EMAIL_PATTERN.test(trimmedEmail)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await resetPassword({
+        email: trimmedEmail,
+        password,
+      });
+
+      setSuccess(
+        "Password reset successfully. Redirecting to login..."
+      );
+
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+
+      setTimeout(() => {
+        window.location.hash = "#/login";
+      }, 1500);
+    } catch (err) {
+      setError(err.message || "Unable to reset password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AuthShell
+      mode="reset-password"
+      title="Reset Password"
+      subtitle="Create a new password for your AnnotateAI account."
+      switchText="Remember your password?"
+      switchPath="/login"
+      switchLabel="Back to login"
+    >
+      <form className="auth-form" onSubmit={submit}>
+
+        {/* Email */}
+        <div className="form-group">
+          <label htmlFor="reset-email">Email address</label>
+
+          <div className="input-wrapper">
+            <span className="input-icon">✉</span>
+
+            <input
+              id="reset-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Reset Password */}
+        <div className="form-group">
+          <label htmlFor="reset-password">
+            Reset password
+          </label>
+
+          <div className="input-wrapper">
+            <span className="input-icon">●</span>
+
+            <input
+              id="reset-password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter new password"
+              autoComplete="new-password"
+              minLength="8"
+              required
+            />
+
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={
+                showPassword
+                  ? "Hide password"
+                  : "Show password"
+              }
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
+
+        {/* Confirm Reset Password */}
+        <div className="form-group">
+          <label htmlFor="reset-confirm-password">
+            Confirm reset password
+          </label>
+
+          <div className="input-wrapper">
+            <span className="input-icon">●</span>
+
+            <input
+              id="reset-confirm-password"
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
+              autoComplete="new-password"
+              minLength="8"
+              required
+            />
+          </div>
+        </div>
+
+        {error && (
+          <div className="error-message">
+            <span>!</span>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="success-message">
+            <span>✓</span>
+            {success}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="auth-button"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span className="spinner" />
+              Resetting password...
+            </>
+          ) : (
+            <>
+              Reset Password
+              <span className="button-arrow">→</span>
+            </>
+          )}
+        </button>
+
+        <div className="secure-note">
+          <span>🔒</span>
+          Your new password is securely protected
         </div>
       </form>
     </AuthShell>

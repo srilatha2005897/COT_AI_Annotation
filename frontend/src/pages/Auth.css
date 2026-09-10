@@ -644,3 +644,21 @@ body,
   font-size: 12px;
   line-height: 1.4;
 }
+
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #eaf8ef;
+  color: #237a3b;
+  border: 1px solid #b9e6c6;
+  font-size: 14px;
+}
+
+.success-message span {
+  font-weight: 700;
+}

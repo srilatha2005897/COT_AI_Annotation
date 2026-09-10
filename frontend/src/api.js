@@ -102,6 +102,7 @@ function requireId(value, label) {
 export const register = (data) => request("/auth/register", json("POST", data));
 export const login = (data) => request("/auth/login", json("POST", data));
 export const logout = () => request("/auth/logout", { method: "POST" }).catch(() => null);
+export const resetPassword = (data) => request("/auth/reset-password", json("POST", data));
 
 // --- Admin ---
 

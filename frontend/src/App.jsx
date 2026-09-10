@@ -4,7 +4,7 @@ import DashboardPage from "./pages/Dashboard";
 import { UploadPage } from "./pages/UploadPage";
 import { ReviewPage, VerifyPage } from "./pages/ReviewPage";
 import { ExportYoloPage } from "./pages/ExportPage";
-import { LoginPage, RegisterPage } from "./pages/Auth";
+import { LoginPage, RegisterPage, ResetPasswordPage } from "./pages/Auth";
 import HomePage from "./pages/Home";
 import { AdminDashboardPage } from "./pages/Admin";
 import CreateProject from "./pages/CreateProject";
@@ -44,6 +44,10 @@ function parseRoute() {
       return { page: "register" };
     case "login":
       return { page: "login" };
+    case "forgot":
+      return { page: "forgot" };
+    case "reset":
+      return { page: "reset" };
     default:
       return { page: "home" };
   }
@@ -177,6 +181,9 @@ export default function App() {
   if (route.page === "register") {
     return <RegisterPage onSuccess={handleLogin} />;
   }
+  if (route.page === "forgot") {
+  return <ResetPasswordPage />;
+}
 
   if (route.page === "home") {
     if (user) {
