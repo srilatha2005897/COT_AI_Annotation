@@ -145,6 +145,10 @@ class LoginRequest(BaseModel):
     password: str = Field(min_length=1, max_length=128)
     role: str = Field(default="user", pattern="^(user|annotator|team_lead|admin)$")
 
+class ResetPasswordRequest(BaseModel):
+    email: EmailField = Field(min_length=5, max_length=255)
+    password: str = Field(min_length=8, max_length=128)
+
 
 class UserOut(ORMModel):
     id: int

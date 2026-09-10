@@ -46,6 +46,7 @@ from app.schemas import (
     ProjectOut,
     ProjectUpdate,
     RegisterRequest,
+    ResetPasswordRequest,
     SkippedFile,
     UserOut,
 )
@@ -264,6 +265,33 @@ def login(
     logger.info("Login: user %s", user.id)
 
     return _issue_session(response, user)
+
+
+@router.post("/auth/reset-password")
+def reset_password(
+    payload: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+):
+    email = payload.email.strip().lower()
+
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="No account found with this email address",
+        )
+
+    user.password_hash = auth_svc.hash_password(payload.password)
+
+    db.commit()
+
+    logger.info("Password reset for user %s", user.id)
+
+    return {
+        "success": True,
+        "message": "Password reset successfully",
+    }
 
 
 @router.post("/auth/logout")
